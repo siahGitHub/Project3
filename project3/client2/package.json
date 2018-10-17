@@ -1,0 +1,26 @@
+{
+  "name": "st-josephs-application",
+  "homepage": "https://geetotes.github.io/acme-insurance-quotes",
+  "proxy": "http://localhost:3001/",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "axios": "^0.18.0",
+    "gh-pages": "^1.0.0",
+    "keymirror": "^0.1.1",
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4",
+    "semantic-ui-css": "^2.2.10",
+    "semantic-ui-react": "^0.68.5"
+  },
+  "devDependencies": {
+    "react-scripts": "1.0.7"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "deploy": "gh-pages -d build"
+  }
+}

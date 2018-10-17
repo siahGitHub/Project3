@@ -1,4 +1,7 @@
 const db = require("../models");
+const jwt = require('jsonwebtoken');
+const secret = require('../config/config').secret;
+const bcrypt = require('bcrypt-nodejs');
 
 
 module.exports = {

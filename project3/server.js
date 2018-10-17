@@ -2,7 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const routes = require("./routes");
-//const db = require('./models/users/User');
+var User = require('./models/User');
 const passport = require('./config/passport');
 const  morgan = require('morgan');
 const app = express();
@@ -21,6 +21,7 @@ if (process.env.NODE_ENV === "production") {
 // Add routes, both API and view
 app.use(routes);
 
+mongoose.Promise = Promise;
 // Connect to the Mongo DB
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/project3",{ useNewUrlParser: true });
 

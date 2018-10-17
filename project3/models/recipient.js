@@ -7,8 +7,7 @@ const recipientSchema = new Schema({
     age: { type: Number, required: true },
     gender: { type: String, required: true },
     schoolGrade: { type: String, required: true },
-    favoriteColor: { type: String, required: true },
-    recipientItems: {type: Schema.Types.ObjectId, ref: "recipientItems"},
+    favoriteColor: { type: String, required: true }
 }, {timestamps: true});
 
 const Recipient = mongoose.model("Recipient", recipientSchema);

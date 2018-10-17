@@ -7,8 +7,7 @@ const recipientItemsSchema = new Schema({
   dontated: { type: Number, required: false },
   incorrect: { type: Number, required: false },
   status: { type: String, required: false},
-  dateAdded: { type: Date, default: Date.now },
-  dateUpdated: { type: Date, default: Date.now }
+  recipient: {type: Schema.Types.ObjectId, ref: "recipient"}
 }, {timestamps: true});
 
 const RecipientItems = mongoose.model("RecipientItems", recipientItemsSchema);

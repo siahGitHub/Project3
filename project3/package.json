@@ -21,14 +21,20 @@
   },
   "dependencies": {
     "axios": "^0.16.2",
+    "bcrypt": "^3.0.0",
+    "bcrypt-node": "^0.1.0",
+    "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.17.2",
     "express": "^4.15.4",
+    "fast-csv": "^2.4.1",
     "if-env": "^1.0.4",
     "jsonwebtoken": "^8.3.0",
     "mongoose": "^5.0.17",
     "mongoose-unique-validator": "^2.0.2",
     "morgan": "^1.9.1",
+    "node-pre-gyp": "^0.11.0",
     "passport": "^0.4.0",
+    "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0"
   }
 }

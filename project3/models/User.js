@@ -3,7 +3,8 @@ const uniqueValidator = require('mongoose-unique-validator');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const secret = require('../config/config').secret;
-//const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt'),
+SALT_WORK_FACTOR = 10;
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
@@ -36,6 +37,7 @@ const UserSchema = new Schema({
   hash: String,
   salt: String
 }, { timestamps: true });
+
 
 //This is called a pre-hook, before the user information is saved in the database
 //this function will be called, we'll get the plain text password, hash it and store it.
