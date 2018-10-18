@@ -1,9 +1,9 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+mongoose.Promise = require('bluebird');
 const routes = require("./routes");
-var User = require('./models/User');
-const passport = require('./config/passport');
+const errorHandler = require('./lib/errorHandler');
 const  morgan = require('morgan');
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -21,6 +21,8 @@ if (process.env.NODE_ENV === "production") {
 // Add routes, both API and view
 app.use(routes);
 
+app.use(errorHandler);
+
 mongoose.Promise = Promise;
 // Connect to the Mongo DB
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/project3",{ useNewUrlParser: true });
@@ -29,3 +31,5 @@ mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/project3",{ use
 app.listen(PORT, function() {
   console.log(`🌎  ==> API Server now listening on PORT ${PORT}!`);
 });
+
+module.exports = app;

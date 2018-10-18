@@ -1,14 +1,17 @@
 const mongoose = require("mongoose");
-const uniqueValidator = require('mongoose-unique-validator');
-const crypto = require('crypto');
-const jwt = require('jsonwebtoken');
-const secret = require('../config/config').secret;
-const bcrypt = require('bcrypt'),
-SALT_WORK_FACTOR = 10;
+const bcrypt = require('bcrypt');
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
 
+  firstName: {
+    type: String,
+    required: [true, "First Name is required"]
+  },
+  lastName: {
+    type: String,
+    required: [true, "First Name is required"]
+  },
   username: {
     type: String,
     lowercase: true,
@@ -31,16 +34,36 @@ const UserSchema = new Schema({
   },
   admin: {
     type: Boolean
-  },
-  bio: String,
-  image: String,
-  hash: String,
-  salt: String
+  }
 }, { timestamps: true });
 
+//to protect our users password
+UserSchema.set('toJSON', {
+  transform(doc, json){
+    delete json.password;
+    return json;
+  }
+});
 
+//setup the password confirmation virtual
+/*
+UserSchema
+.virtual('passwordConfirmation')
+.set(function setPasswordConfirmation(passwordConfirmation){
+  this._passwordConfirmation = passwordConfirmation;
+});
+
+UserSchema.pre('validate', function checkPasswords(next){
+  console.log(this.password +" "+ this._passwordConfirmation);
+  if(this.isModified('password') && this._passwordConfirmation !== this.password) {
+    this.invalidate('passwordConfirmation', 'passwords do not match');
+  }
+  next();
+})
+*/
 //This is called a pre-hook, before the user information is saved in the database
 //this function will be called, we'll get the plain text password, hash it and store it.
+
 UserSchema.pre('save', async function(next){
   //'this' refers to the current document about to be saved
   const user = this;
@@ -53,50 +76,22 @@ UserSchema.pre('save', async function(next){
   next();
 });
 
+/*
+UserSchema.pre('save', function hashPassword(next) {
+  if(this.isModified('password')) this.password = bcrypt.hashSync(this.password, bcrypt.genSaltSync(8));
+  next();
+});
+*/
+
 //We'll use this later on to make sure that the user trying to log in has the correct credentials
-UserSchema.methods.isValidPassword = async function(password){
+UserSchema.methods.validatePassword = async function(password){
   const user = this;
   //Hashes the password sent by the user for login and checks if the hashed password stored in the 
   //database matches the one sent. Returns true if it does else false.
-  const compare = await bcrypt.compare(password, user.password);
+  const compare = await bcrypt.compare(password, this.password);
   return compare;
 }
 
-/*
-UserSchema.plugin(uniqueValidator, { message: 'is already taken.' });
-
-UserSchema.methods.setPassword = function (password) {
-  this.salt = crypto.randomBytes(16).toString('hex');
-  this.hash = crypto.pbkdf2Sync(password, this.salt, 10000, 512, 'sha512').toString('hex');
-};
-
-UserSchema.methods.validPassword = function (password) {
-  let hash = crypto.pbkdf2Sync(password, this.salt, 10000, 512, 'sha512').toString('hex');
-  return this.hash === hash;
-};
-
-UserSchema.methods.generateJWT = function () {
-  var today = new Date();
-  var exp = new Date(today);
-  exp.setDate(today.getDate() + 60);
-
-  return jwt.sign({
-    id: this._id,
-    username: this.username,
-    exp: parseInt(exp.getTime() / 1000),
-  }, secret);
-};
-
-UserSchema.methods.toAuthJSON = function(){
-    return {
-      username: this.username,
-      email: this.email,
-      token: this.generateJWT(),
-      bio: this.bio,
-      image: this.image
-    };
-  };
-*/
 const User = mongoose.model("User", UserSchema);
 
 module.exports = User;

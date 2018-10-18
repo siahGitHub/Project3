@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Button, Grid, Message, List, Input, Menu, Header, Icon } from 'semantic-ui-react';
+import { Form, Button, Grid, Message, List, Input, Menu, Header, Icon, Select } from 'semantic-ui-react';
 import { states } from './States.js';
 import API from "./utils/API";
 
@@ -101,12 +101,16 @@ class BaseForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      value: null,
       type: this.props.type,
       firstName: null,
       lastName: null,
       age: null,
       schoolGrade: null,
       recipientID: null,
+      status1: null,
+      shirt: null,
+      items: [],
       errors: []
     }
     this._onChange = this._onChange.bind(this);
@@ -128,7 +132,16 @@ class BaseForm extends Component {
   _validate(e) {
     e.preventDefault();
     // You can add your validation logic here
-
+    let value = this.state.value;
+    if (value === 'yes-shirt') {
+      this.setState({ status1 : ['Y'] });
+    } else if (value === 'no-shirt') {
+      this.setState({ status1 : ['N'] });
+    } else {
+      this.setState({
+        errors: ['Please select Yes/No']
+      });
+    }
     this.props.saveForm({
       type: this.props.type,
       firstName: this.state.firstName,
@@ -142,7 +155,8 @@ class BaseForm extends Component {
       lastName: this.state.lastName,
       age: this.state.age,
       schoolGrade: this.state.schoolGrade,
-      favoriteColor: "Green"
+      favoriteColor: "Green",
+      items: [{article:this.state.shirt, size:"m", donated:0, incorrect:0, status: this.state.status1}]
       })
         .then(res => {
           console.log(res);
@@ -151,23 +165,10 @@ class BaseForm extends Component {
         .catch(err => console.log(err));
     this.props.next(this.props.nextState);
   }
-/*
-  handleFormSubmit = event => {
-    event.preventDefault();
-    if (this.state.title && this.state.author) {
-      API.saveRecipients({
-      gender: this.props.type,
-      firstName: this.state.firstName,
-      lastName: this.state.lastName,
-      age: this.state.age,
-      schoolGrade: this.state.schoolGrade
-      })
-        .then(res => console.log(res))
-        .catch(err => console.log(err));
-    }
-  };
-    */
+
   render() {
+
+  
     return(
       <Form>
         { this.state.errors.length > 0 &&
@@ -244,53 +245,94 @@ export const MaleForm = (props) => {
 export class BoatDetail extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      article: null,
+      articleSize: null,
+      article2: null,
+      article2Size: null,
+      article3: null,
+      article3Size: null,
+      article4: null,
+      article4Size: null
+    };
     this._onChange = this._onChange.bind(this);
     this._validate = this._validate.bind(this);
   }
-  _onChange(e) {
+  _onChange= (e, { value }) => this.setState({ value })
+  
 
-  }
-
+  
   _validate(e) {
     // You can add validation logic here
+    /*
+    this.props.saveForm({
+      article1: this.state.article1,
+      article2: this.state.article1Size,
+      donated: this.state.donated,
+      recipient: this.props.recipientID
+    });
+    */
+   
+    API.saveRecipientItems({
+      article: this.state.article1,
+      size: this.state.article1Size,
+      donated: 0,
+      incorrect: 0,
+      status: "verified",
+      recipient: this.state.recipientID
+    }
+    )
+        .then(res => {
+          console.log(res);
+          console.log(this.props.vehicles);
+          this.setState({ recipientID: res.data._id});
+        })
+        .catch(err => console.log(err));
     this.props.next(states.CONFIRM)
   }
 
-  handleChange = (e, { value }) => this.setState({ value })
+  //handleChange = (e, { value }) => this.setState({ value })
 
   render() {
     const { value } = this.state
     let articleNames = [
       {
+        key:'S',
         text: 'Shirt',
         value: 'Shirt'
       },
       {
+        key:'P',
         text: 'Pants',
         value: 'Pants'
       },
       {
+        key:'K',
         text: 'Socks',
         value: 'Socks'
       },
       {
+        key: 'C',
         text: 'Coat',
         value: 'Coat'
       },
       {
+        key: 'H',
         text: 'Hoodie',
         value: 'Hoodie'
       },
       {
+        key: 'U',
         text: 'Undergarment',
         value: 'Undergarment'
       },
       {
+        key: 'N',
         text: 'Sneaker',
         value: 'Sneaker'
       },
       {
+        key: 'B',
         text: 'Boot',
         value: 'Boot'
       }
@@ -327,34 +369,34 @@ export class BoatDetail extends Component {
           <Grid>
             <Grid.Row columns={2}>
               <Grid.Column>
-                <Form.Select name="Article1" fluid label='Article' options={articleNames} placeholder='Article' />
+                <Form.Select fluid control={Select} name='Article1' label='Article' options={articleNames} placeholder='Article' onChange={this._onChange}/>
               </Grid.Column>
               <Grid.Column>
-              <Form.Select name="Article1size" fluid label='Size' options={articleSizes} placeholder='Size' />
+              <Form.Select fluid control={Select} name='Article1size' label='Size' onChange={this._onChange} options={articleSizes} placeholder='Size' />
               </Grid.Column>
             </Grid.Row>
             <Grid.Row columns={2}>
             <Grid.Column>
-                <Form.Select name="Article2" fluid label='Article' options={articleNames} placeholder='Article' />
+                <Form.Select fluid control={Select} name='Article2' label='Article' onChange={this._onChange} options={articleNames} placeholder='Article' />
               </Grid.Column>
               <Grid.Column>
-                <Form.Select name="Article2size" fluid label='Size' options={articleSizes} placeholder='Size' />
+                <Form.Select fluid control={Select} name='Article2size' label='Size' onChange={this._onChange} options={articleSizes} placeholder='Size' />
               </Grid.Column>
             </Grid.Row>
             <Grid.Row columns={2}>
             <Grid.Column>
-                <Form.Select name="Article3" fluid label='Article' options={articleNames} placeholder='Article' />
+                <Form.Select fluid control={Select} name='Article3' label='Article' onChange={this._onChange} options={articleNames} placeholder='Article' />
               </Grid.Column>
               <Grid.Column>
-              <Form.Select name="Article3size" fluid label='Size' options={articleSizes} placeholder='Size' />
+              <Form.Select fluid control={Select} name='Article3size' label='Size' onChange={this._onChange} options={articleSizes} placeholder='Size' />
               </Grid.Column>
             </Grid.Row>
             <Grid.Row columns={2}>
             <Grid.Column>
-                <Form.Select name="Article4" fluid label='Article' options={articleNames} placeholder='Article' />
+                <Form.Select fluid control={Select} name="Article4" label='Article' onChange={this._onChange} options={articleNames} placeholder='Article' />
               </Grid.Column>
               <Grid.Column>
-              <Form.Select name="Article4size" fluid label='Size' options={articleSizes} placeholder='Size' />
+              <Form.Select fluid control={Select} name="Article4size" label='Size' onChange={this._onChange} options={articleSizes} placeholder='Size' />
               </Grid.Column>
             </Grid.Row>
           </Grid>
@@ -373,6 +415,16 @@ export class BoatDetail extends Component {
 }
 
 export class Confirm extends React.Component {
+  
+  _genReport(e){
+    //e.preventDefault();
+    API.getReports()
+      .then(res =>
+        console.log("report generated")
+      )
+      .catch(err => console.log(err));
+  };
+
   render() {
     /*
      * Here is our final step. In the real world, we would
@@ -399,7 +451,7 @@ export class Confirm extends React.Component {
             <Button onClick={() => this.props.next(states.VEHICLE_CHOOSE)}>Add Another</Button>
           </Grid.Column>
           <Grid.Column floated='right' width={5}>
-            <Button primary onClick={() => alert('Finished!')}>Save</Button>
+            <Button primary onClick={this._genReport} download>Generate Report</Button>
           </Grid.Column>
         </Grid.Row>
       </Grid>
@@ -412,14 +464,14 @@ export class MenuExampleNameProp extends Component {
 
   handleItemClick = (e, { name }) => {
     this.setState({ activeItem: name });
-
+  }
+/*
     API.getReports()
-      .then(res =>
-        console.log("report generated")
+      .then(console.log("report generated")
       )
       .catch(err => console.log(err));
   }
-
+*/
   render() {
     const { activeItem } = this.state
 

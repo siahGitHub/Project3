@@ -12,8 +12,10 @@ export class StateMachine {
     this.transitions = {
       [states.WELCOME] : [states.VEHICLE_CHOOSE],
       [states.VEHICLE_CHOOSE] : [states.FEMALE, states.MALE],
+      //[states.FEMALE] : [states.CONFIRM],
+      //[states.MALE] : [states.CONFIRM],
       [states.FEMALE] : [states.BOAT_DETAIL],
-      //[states.BOAT_DETAIL] : [states.CONFIRM],
+      [states.BOAT_DETAIL] : [states.CONFIRM],
       [states.MALE] : [states.BOAT_DETAIL],
       [states.BOAT_DETAIL] : [states.CONFIRM],
       [states.CONFIRM] : [states.VEHICLE_CHOOSE, states.FINISH] // FYI the FINISH state is not used

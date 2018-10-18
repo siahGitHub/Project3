@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { Container, Header } from 'semantic-ui-react'
-import { Welcome, VehicleChoose, MaleForm, FemaleForm, BoatDetail, Confirm, MenuExampleNameProp } from './Steps.js';
+import { Welcome, VehicleChoose, MaleForm, FemaleForm, BoatDetail, Confirm, MenuExampleNameProp, Responsive } from './Steps.js';
 import { states } from './States.js';
 import { StateMachine } from './StateMachine.js';
-//import { MyMenu } from './MyMenu.js';
+//import { HomepageLayout } from './HomepageHeading.js';
+//import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 class App extends Component {
   constructor(props) {
@@ -69,6 +70,7 @@ class App extends Component {
           next={this._next} />);
       case states.BOAT_DETAIL:
        return(<BoatDetail
+        saveForm={this._saveVehicle}
          back={this._back}
          next={this._next} />);
       case states.CONFIRM:
